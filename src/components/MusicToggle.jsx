@@ -26,7 +26,7 @@ export default function MusicToggle() {
       aria-label="Toggle Music"
     >
       {/* Add your music file to public/music/birthday.mp3 */}
-      <audio ref={audioRef} src={musicFile} loop />
+      <audio ref={audioRef} src="./music/birthday.mp3" loop />
       
       {isPlaying ? <Pause size={24} /> : <Music size={24} />}
       

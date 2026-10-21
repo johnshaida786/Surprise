@@ -10,14 +10,14 @@ export const config = {
 
   letter: "Dear Brother,\n\nHappy Birthday! I wanted to build something special just for you to show how much you mean to me. You are my best friend, my partner in crime, and the best brother anyone could ask for.\n\nKeep smiling, keep dreaming, and never change. Have a fantastic year ahead!",
 
-  // Note: I added %20 where your spaces are so the browser can read them. 
+  // Note: %20 represents the space in your file names (e.g., "photo 2.jpeg")
   photos: [
-    { src: "/src/public/images/photo1.jpeg", alt: "Memory 1", caption: "Always laughing" },
-    { src: "/src/public/images/photo%202.jpeg", alt: "Memory 2", caption: "Best trips" },
-    { src: "/src/public/images/photo%203.jpeg", alt: "Memory 3", caption: "Brothers" },
-    { src: "/src/public/images/photo%204.jpeg", alt: "Memory 4", caption: "Good times" },
-    { src: "/src/public/images/photo%205.jpeg", alt: "Memory 5", caption: "Crazy days" },
-    { src: "/src/public/images/photo%206.jpeg", alt: "Memory 6", caption: "Forever" },
+    { src: "./images/photo1.jpeg", alt: "Memory 1", caption: "Always laughing" },
+    { src: "./images/photo%202.jpeg", alt: "Memory 2", caption: "Best trips" },
+    { src: "./images/photo%203.jpeg", alt: "Memory 3", caption: "Brothers" },
+    { src: "./images/photo%204.jpeg", alt: "Memory 4", caption: "Good times" },
+    { src: "./images/photo%205.jpeg", alt: "Memory 5", caption: "Crazy days" },
+    { src: "./images/photo%206.jpeg", alt: "Memory 6", caption: "Forever" },
   ],
 
   reasons: [
@@ -27,25 +27,24 @@ export const config = {
     { title: "The Advisor", desc: "Thanks for all the life advice (even the unsolicited ones).", icon: "Lightbulb" },
   ],
 
-  // I added the `photo` property to each timeline event for the new sticky image animation!
   timeline: [
     { 
       year: "Childhood", 
       title: "The Beginning", 
       desc: "Fighting over toys and building forts.", 
-      photo: "/src/public/images/photo1.jpeg" 
+      photo: "./images/photo1.jpeg" 
     },
     { 
       year: "Teens", 
       title: "Growing Up", 
       desc: "Late night talks, video games, and endless music.", 
-      photo: "/src/public/images/photo%202.jpeg" 
+      photo: "./images/photo%202.jpeg" 
     },
     { 
       year: "Today", 
       title: "Best Friends", 
       desc: "Grateful for every moment we share.", 
-      photo: "/src/public/images/photo%203.jpeg" 
+      photo: "./images/photo%203.jpeg" 
     }
   ]
 };
