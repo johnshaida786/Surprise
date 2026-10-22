@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { config } from '../config';
 import { fireConfetti } from '../utils/confetti';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Countdown() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -9,15 +9,10 @@ export default function Countdown() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = config.targetDate.getTime() - now;
-
+      const distance = config.targetDate.getTime() - new Date().getTime();
       if (distance < 0) {
-        clearInterval(timer);
-        setIsToday(true);
-        fireConfetti();
-        setTimeout(fireConfetti, 1000);
-        setTimeout(fireConfetti, 2500);
+        clearInterval(timer); setIsToday(true);
+        fireConfetti(); setTimeout(fireConfetti, 1000); setTimeout(fireConfetti, 2500);
       } else {
         setTimeLeft({
           days: Math.floor(distance / (1000 * 60 * 60 * 24)),
@@ -30,70 +25,83 @@ export default function Countdown() {
     return () => clearInterval(timer);
   }, []);
 
-  // 🌟 GRAND FINALE STATE 🌟
   if (isToday) {
     return (
       <section className="py-32 text-center relative z-10 flex flex-col items-center justify-center min-h-[60vh]">
-        <motion.div
-           initial={{ scale: 0.5, opacity: 0 }}
-           animate={{ scale: 1, opacity: 1 }}
-           transition={{ type: "spring", bounce: 0.5, duration: 1 }}
-           className="mb-8"
-        >
+        <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", bounce: 0.5 }}>
           <h2 className="text-6xl md:text-8xl lg:text-9xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400 drop-shadow-[0_0_50px_rgba(236,72,153,0.8)] animate-pulse">
             IT'S TIME!
           </h2>
         </motion.div>
-        
-        <motion.div
-           initial={{ y: 50, opacity: 0 }}
-           animate={{ y: 0, opacity: 1 }}
-           transition={{ delay: 0.5, duration: 0.8 }}
-           className="glass p-8 md:p-12 rounded-3xl max-w-3xl border-pink-500/30 shadow-[0_0_50px_rgba(236,72,153,0.2)]"
-        >
-          <p className="text-3xl md:text-5xl font-display mb-6 text-white">
-            Happy Birthday <span className="text-gradient font-bold">{config.name}</span>! 🎉
-          </p>
-          <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-            The wait is finally over. Wishing you a day filled with endless joy, beautiful surprises, and all the happiness in the world. 
-            Today is all about celebrating the amazing person you are!
-          </p>
+        <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.5 }} className="glass p-8 md:p-12 rounded-3xl max-w-3xl border-pink-500/30 shadow-[0_0_50px_rgba(236,72,153,0.2)] mt-8 bg-black/60 backdrop-blur-xl">
+          <p className="text-3xl md:text-5xl font-display mb-6 text-white">Happy Birthday <span className="text-gradient font-bold">{config.name}</span>! 🎉</p>
+          <p className="text-lg md:text-xl text-gray-200">The wait is finally over. Wishing you a day filled with endless joy, beautiful surprises, and all the happiness in the world!</p>
         </motion.div>
       </section>
     );
   }
 
-  const TimeBlock = ({ value, label, isSeconds }) => (
-    <div className="relative group">
-      <div className="absolute -inset-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
-      <div className="relative glass flex flex-col items-center justify-center w-24 h-28 md:w-32 md:h-36 rounded-2xl border-white/10 hover:border-white/30 transition-colors">
-        <motion.span 
-          key={value}
-          initial={{ y: -10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className={`text-4xl md:text-6xl font-bold font-display text-white ${isSeconds ? 'text-pink-400' : ''}`}
-        >
-          {value.toString().padStart(2, '0')}
-        </motion.span>
-        <span className="text-xs md:text-sm text-gray-400 uppercase tracking-widest mt-2 font-medium">
-          {label}
-        </span>
-      </div>
-    </div>
-  );
+  const TimeBlock = ({ value, label, isSeconds, index }) => {
+    const formattedValue = value.toString().padStart(2, '0');
+
+    return (
+      <motion.div 
+        animate={{ y: [0, -10, 0] }} 
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: index * 0.2 }}
+        className="relative group"
+      >
+        <div className="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent rounded-2xl group-hover:from-pink-500/40 group-hover:to-purple-500/40 transition-all duration-500 blur-md" />
+        
+        <div className="relative flex flex-col items-center justify-center w-20 h-28 md:w-28 md:h-36 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden">
+          
+          {isSeconds && <div className="absolute inset-0 bg-pink-500/10 blur-xl animate-pulse" />}
+
+          <div className="relative overflow-hidden h-[2.5rem] md:h-[3.5rem] w-full flex justify-center">
+            <AnimatePresence mode="popLayout">
+              <motion.span
+                key={formattedValue}
+                initial={{ y: 30, opacity: 0, filter: "blur(4px)" }}
+                animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                exit={{ y: -30, opacity: 0, filter: "blur(4px)" }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className={`absolute text-4xl md:text-6xl font-bold font-display tracking-tighter tabular-nums ${isSeconds ? 'text-pink-400 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]' : 'text-white'}`}
+              >
+                {formattedValue}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+          
+          <span className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-medium">
+            {label}
+          </span>
+        </div>
+      </motion.div>
+    );
+  };
 
   return (
-    <section className="py-24 flex flex-col items-center px-4 relative z-10">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-display mb-3 text-white">The countdown begins</h2>
-        <p className="text-gray-400">Get ready to celebrate the legend</p>
-      </div>
+    <section className="relative py-32 flex flex-col items-center px-4 overflow-hidden w-full">
       
-      <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-        <TimeBlock value={timeLeft.days} label="Days" />
-        <TimeBlock value={timeLeft.hours} label="Hours" />
-        <TimeBlock value={timeLeft.minutes} label="Mins" />
-        <TimeBlock value={timeLeft.seconds} label="Secs" isSeconds={true} />
+      {/* 🌌 BACKGROUND IMAGE SECTION (Pointed to 8.jpeg) 🌌 */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+        style={{ backgroundImage: "url('./images/8.jpeg')" }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-black/60 to-[#0a0a0f] z-0" />
+
+      {/* CONTENT */}
+      <div className="relative z-10 flex flex-col items-center w-full">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-5xl font-display mb-3 text-white tracking-tight drop-shadow-lg">The countdown begins</h2>
+          <p className="text-gray-300 text-lg drop-shadow-md">Get ready to celebrate the legend</p>
+        </div>
+        
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+          <TimeBlock value={timeLeft.days} label="Days" index={0} />
+          <TimeBlock value={timeLeft.hours} label="Hours" index={1} />
+          <TimeBlock value={timeLeft.minutes} label="Mins" index={2} />
+          <TimeBlock value={timeLeft.seconds} label="Secs" isSeconds={true} index={3} />
+        </div>
       </div>
     </section>
   );
