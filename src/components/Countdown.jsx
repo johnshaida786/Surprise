@@ -41,55 +41,56 @@ export default function Countdown() {
     );
   }
 
-  const TimeBlock = ({ value, label, isSeconds, index }) => {
+  const TimeBlock = ({ value, label, theme }) => {
     const formattedValue = value.toString().padStart(2, '0');
 
+    const themes = {
+      purple: { glow: "group-hover:from-purple-500/50 group-hover:to-purple-900/50", bg: "bg-purple-500/10", text: "text-purple-400 drop-shadow-[0_0_15px_rgba(168,85,247,0.8)]", border: "border-purple-500/30 group-hover:border-purple-400/60" },
+      cyan: { glow: "group-hover:from-cyan-500/50 group-hover:to-blue-900/50", bg: "bg-cyan-500/10", text: "text-cyan-400 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]", border: "border-cyan-500/30 group-hover:border-cyan-400/60" },
+      orange: { glow: "group-hover:from-orange-500/50 group-hover:to-red-900/50", bg: "bg-orange-500/10", text: "text-orange-400 drop-shadow-[0_0_15px_rgba(249,115,22,0.8)]", border: "border-orange-500/30 group-hover:border-orange-400/60" },
+      pink: { glow: "group-hover:from-pink-500/50 group-hover:to-rose-900/50", bg: "bg-pink-500/10", text: "text-pink-400 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]", border: "border-pink-500/30 group-hover:border-pink-400/60" }
+    };
+
+    const style = themes[theme];
+
     return (
-      <motion.div 
-        animate={{ y: [0, -10, 0] }} 
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: index * 0.2 }}
-        className="relative group"
-      >
-        <div className="absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent rounded-2xl group-hover:from-pink-500/40 group-hover:to-purple-500/40 transition-all duration-500 blur-md" />
+      <div className="relative group">
+        <div className={`absolute -inset-1 bg-gradient-to-b from-white/10 to-transparent rounded-2xl ${style.glow} transition-all duration-500 blur-md`} />
         
-        <div className="relative flex flex-col items-center justify-center w-20 h-28 md:w-28 md:h-36 rounded-2xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden">
+        <div className={`relative flex flex-col items-center justify-center w-20 h-28 md:w-28 md:h-36 rounded-2xl bg-[#0a0a0f]/80 backdrop-blur-xl border ${style.border} shadow-[0_8px_32px_rgba(0,0,0,0.5)] overflow-hidden transition-colors duration-500`}>
           
-          {isSeconds && <div className="absolute inset-0 bg-pink-500/10 blur-xl animate-pulse" />}
+          <div className={`absolute inset-0 ${style.bg} blur-xl`} />
 
           <div className="relative overflow-hidden h-[2.5rem] md:h-[3.5rem] w-full flex justify-center">
+            {/* AnimatePresence will ONLY trigger when the 'key' changes. 
+                We removed 'initial' so it doesn't animate on page load. */}
             <AnimatePresence mode="popLayout">
               <motion.span
                 key={formattedValue}
-                initial={{ y: 30, opacity: 0, filter: "blur(4px)" }}
+                initial={false} // <-- ADDED THIS to stop the initial load animation
                 animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
                 exit={{ y: -30, opacity: 0, filter: "blur(4px)" }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className={`absolute text-4xl md:text-6xl font-bold font-display tracking-tighter tabular-nums ${isSeconds ? 'text-pink-400 drop-shadow-[0_0_15px_rgba(236,72,153,0.8)]' : 'text-white'}`}
+                className={`absolute text-4xl md:text-6xl font-bold font-display tracking-tighter tabular-nums ${style.text}`}
               >
                 {formattedValue}
               </motion.span>
             </AnimatePresence>
           </div>
           
-          <span className="text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-medium">
+          <span className="relative text-[10px] md:text-xs text-gray-300 uppercase tracking-widest mt-1 font-medium">
             {label}
           </span>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
   return (
     <section className="relative py-32 flex flex-col items-center px-4 overflow-hidden w-full">
-      
-      {/* 🌌 BACKGROUND IMAGE SECTION (Pointed to 8.jpeg) 🌌 */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-        style={{ backgroundImage: "url('./images/8.jpeg')" }}
-      />
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0" style={{ backgroundImage: "url('./images/8.jpg')" }} />
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0f] via-black/60 to-[#0a0a0f] z-0" />
 
-      {/* CONTENT */}
       <div className="relative z-10 flex flex-col items-center w-full">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-5xl font-display mb-3 text-white tracking-tight drop-shadow-lg">The countdown begins</h2>
@@ -97,10 +98,10 @@ export default function Countdown() {
         </div>
         
         <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-          <TimeBlock value={timeLeft.days} label="Days" index={0} />
-          <TimeBlock value={timeLeft.hours} label="Hours" index={1} />
-          <TimeBlock value={timeLeft.minutes} label="Mins" index={2} />
-          <TimeBlock value={timeLeft.seconds} label="Secs" isSeconds={true} index={3} />
+          <TimeBlock value={timeLeft.days} label="Days" theme="purple" />
+          <TimeBlock value={timeLeft.hours} label="Hours" theme="cyan" />
+          <TimeBlock value={timeLeft.minutes} label="Mins" theme="orange" />
+          <TimeBlock value={timeLeft.seconds} label="Secs" theme="pink" />
         </div>
       </div>
     </section>
